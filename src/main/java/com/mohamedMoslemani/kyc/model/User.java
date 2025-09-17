@@ -1,6 +1,7 @@
 package com.mohamedMoslemani.kyc.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 
 @Entity
@@ -11,17 +12,22 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+
+    @Column(nullable = false)
+    private boolean enabled = false;
+
+    @Email
     @NotBlank
-    @Column(unique = true)
-    private String username;
+    @Column(unique = true, nullable = false)
+    private String email;   
 
     @NotBlank
+    @Column(nullable = false)
     private String password;
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private Role role;
-
-    // --- Getters and Setters ---
 
     public Long getId() {
         return id;
@@ -31,12 +37,12 @@ public class User {
         this.id = id;
     }
 
-    public String getUsername() {
-        return username;
+    public String getEmail() {   
+        return email;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setEmail(String email) {   
+        this.email = email;
     }
 
     public String getPassword() {
@@ -54,4 +60,8 @@ public class User {
     public void setRole(Role role) {
         this.role = role;
     }
+
+public boolean isEnabled() { return enabled; }
+public void setEnabled(boolean enabled) { this.enabled = enabled; }
+
 }
