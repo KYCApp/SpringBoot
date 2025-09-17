@@ -81,7 +81,7 @@ public class DocumentController {
         Customer customer = customerService.getCustomer(customerId)
                 .orElseThrow(() -> new RuntimeException("Customer not found"));
 
-        if (!customer.getUser().getUsername().equals(username)) {
+        if (!customer.getUser().getEmail().equals(username)) {
             return ResponseEntity.status(403).body(Map.of("status", "error", "message", "Not allowed"));
         }
 
