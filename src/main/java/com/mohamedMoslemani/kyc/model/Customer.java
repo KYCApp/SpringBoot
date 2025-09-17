@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.Period;
 
 @Entity
 @Table(name = "customers")
@@ -13,7 +14,10 @@ public class Customer {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // Core Identification
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
+
     @NotBlank
     private String firstName;
 
@@ -27,9 +31,8 @@ public class Customer {
     @NotBlank
     private String nationality;
 
-    private String gender; // Could be Enum (M/F/Other)
+    private String gender;
 
-    // Contact Information
     @Email
     @NotBlank
     private String email;
@@ -44,27 +47,45 @@ public class Customer {
     private String city;
     private String country;
 
-    // Identification
     @NotBlank
     private String idNumber;
 
     @NotBlank
-    private String idType; // Passport, NationalID, DriverLicense, etc.
+    private String idType;
 
+    @Future(message = "ID expiry date must be in the future")
     private LocalDate idExpiryDate;
 
-    // KYC Compliance Info
     @Enumerated(EnumType.STRING)
     private KycStatus kycStatus = KycStatus.PENDING;
 
-    private LocalDateTime createdAt = LocalDateTime.now();
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 
-    private LocalDateTime updatedAt = LocalDateTime.now();
+    // === Validation Helpers ===
+    @AssertTrue(message = "Customer must be at least 18 years old")
+    public boolean isAdult() {
+        return dateOfBirth != null && Period.between(dateOfBirth, LocalDate.now()).getYears() >= 18;
+    }
 
-    // --- Getters & Setters ---
+    // === Lifecycle Callbacks ===
+    @PrePersist
+    protected void onCreate() {
+        createdAt = LocalDateTime.now();
+        updatedAt = LocalDateTime.now();
+    }
 
+    @PreUpdate
+    protected void onUpdate() {
+        updatedAt = LocalDateTime.now();
+    }
+
+    // === Getters & Setters ===
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
+
+    public User getUser() { return user; }
+    public void setUser(User user) { this.user = user; }
 
     public String getFirstName() { return firstName; }
     public void setFirstName(String firstName) { this.firstName = firstName; }
