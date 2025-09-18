@@ -9,6 +9,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
+import java.util.Base64;
 import java.util.Date;
 import java.util.Map;
 import java.util.function.Function;
@@ -22,8 +23,13 @@ public class JwtUtil {
     private String secret;
 
     private Key getSigningKey() {
-        // decode secret string to key
-        return Keys.hmacShaKeyFor(secret.getBytes());
+        try {
+            byte[] keyBytes = Base64.getDecoder().decode(secret);
+            return Keys.hmacShaKeyFor(keyBytes);
+        } catch (Exception e) {
+            System.out.println("[JWTUTIL] Failed to decode secret: " + e.getMessage());
+            throw e;
+        }
     }
 
     // Generate token
@@ -48,8 +54,18 @@ public class JwtUtil {
 
     // Validate token
     public boolean validateToken(String token, UserDetails userDetails) {
-        final String username = getUsername(token);
-        return username.equals(userDetails.getUsername()) && !isTokenExpired(token);
+        try {
+            final String username = getUsername(token);
+            boolean expired = isTokenExpired(token);
+            System.out.println("[JWTUTIL] Token subject: " + username);
+            System.out.println("[JWTUTIL] DB username: " + userDetails.getUsername());
+            System.out.println("[JWTUTIL] Token expired: " + expired);
+
+            return username.equals(userDetails.getUsername()) && !expired;
+        } catch (Exception e) {
+            System.out.println("[JWTUTIL] Validation error: " + e.getMessage());
+            return false;
+        }
     }
 
     // Helpers
