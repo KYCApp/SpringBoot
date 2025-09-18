@@ -19,7 +19,6 @@ public class CustomerService {
         this.repo = repo;
     }
 
-    // --- Core CRUD ---
     public Customer saveCustomer(Customer customer) {
         validateCustomer(customer);
         return repo.save(customer);
@@ -57,7 +56,6 @@ public class CustomerService {
         repo.save(customer);
     }
 
-    // --- Validation ---
     private void validateCustomer(Customer customer) {
         // Age must be >= 18
         if (customer.getDateOfBirth() != null) {
@@ -74,4 +72,16 @@ public class CustomerService {
             }
         }
     }
+
+    public boolean isProfileComplete(Customer customer) {
+    return customer.getFirstName() != null && !customer.getFirstName().isBlank()
+        && customer.getLastName() != null && !customer.getLastName().isBlank()
+        && customer.getPhoneNumber() != null && !customer.getPhoneNumber().isBlank()
+        && customer.getNationality() != null && !customer.getNationality().isBlank()
+        && customer.getIdNumber() != null && !customer.getIdNumber().isBlank()
+        && customer.getIdType() != null && !customer.getIdType().isBlank()
+        && customer.getDateOfBirth() != null
+        && customer.getIdExpiryDate() != null;
+}
+
 }
