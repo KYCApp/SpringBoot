@@ -42,7 +42,6 @@ public class CustomerService {
         repo.deleteById(id);
     }
 
-    // --- Search ---
     public Optional<Customer> getCustomerByEmail(String email) {
         return repo.findByEmail(email);
     }
@@ -51,7 +50,6 @@ public class CustomerService {
         return repo.findByIdNumber(idNumber);
     }
 
-    // --- Status update ---
     public void updateStatus(Long id, KycStatus status) {
         Customer customer = repo.findById(id)
                 .orElseThrow(() -> new RuntimeException("Customer not found"));
