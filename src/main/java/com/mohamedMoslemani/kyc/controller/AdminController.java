@@ -45,19 +45,16 @@ public class AdminController {
         this.customerRepo = customerRepo;
     }
 
-    // Dashboard
     @GetMapping("/dashboard")
     public ResponseEntity<?> dashboard() {
         return ResponseEntity.ok(Map.of("message", "Welcome Admin"));
     }
 
-    // Stats placeholder (can be extended later)
     @GetMapping("/stats")
     public ResponseEntity<?> stats() {
         return ResponseEntity.ok(Map.of("status", "all good"));
     }
 
-    // Paginated users
     @GetMapping("/users")
     public ResponseEntity<Page<UserDTO>> getAllUsers(Pageable pageable) {
         Page<UserDTO> users = userRepo.findAll(pageable)
@@ -65,7 +62,6 @@ public class AdminController {
         return ResponseEntity.ok(users);
     }
 
-    // Update KYC status
     @PutMapping("/customers/{id}/status")
     public ResponseEntity<String> updateKycStatus(@PathVariable Long id,
                                                   @RequestParam("status") String status) {
@@ -124,6 +120,7 @@ public class AdminController {
         return ResponseEntity.ok(auditLogRepo.findAll());
     }
 
+    
     // System-wide metrics
     @GetMapping("/metrics")
     public ResponseEntity<?> metrics() {
