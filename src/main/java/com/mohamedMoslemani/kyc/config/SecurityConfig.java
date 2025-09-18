@@ -43,8 +43,8 @@ public class SecurityConfig {
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/api/auth/**").permitAll()
-                .requestMatchers("/api/customers/**").hasAuthority("CUSTOMER")
-                .requestMatchers("/api/admin/**").hasAuthority("ADMIN")
+                .requestMatchers("/api/customers/**").hasRole("CUSTOMER")
+                .requestMatchers("/api/admin/**").hasRole("ADMIN")
                 .anyRequest().authenticated()
             )
             .addFilterBefore(rateLimitingFilter, UsernamePasswordAuthenticationFilter.class)
