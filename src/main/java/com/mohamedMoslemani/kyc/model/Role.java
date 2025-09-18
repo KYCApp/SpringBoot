@@ -1,6 +1,6 @@
 package com.mohamedMoslemani.kyc.model;
 
 public enum Role {
-    CUSTOMER,
-    ADMIN
+    ROLE_CUSTOMER,
+    ROLE_ADMIN
 }
